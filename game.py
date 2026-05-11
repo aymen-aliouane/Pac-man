@@ -45,7 +45,7 @@ def game():
     while run:
         # clock.tick() return the time in ms
         # between this frame and the last frame
-        dt = clock.tick(settings.fps)
+        dt = clock.tick(settings.fps) / 1000
 
         # each frame we draw the image of the maze, then the player on top of it
         # no need to iterate over all cells we have now maze_layer
@@ -55,7 +55,7 @@ def game():
         # game.state is the state of the player, it can be Game, Menu or Pause
         # based on that it will handle input differently, but all of thems return
         # True if the user ask to quit
-        end = game.state.value.handle_input(pygame.event.get(), game)
+        end = game.state.value.handle_input(pygame.event.get(), game, dt)
         if end:
             break
 

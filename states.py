@@ -11,7 +11,7 @@ class MenuState():
 class GameState():
     """Class that handle the user events during the game"""
 
-    def handle_input(self, events: list[Any], game: Any) -> bool:
+    def handle_input(self, events: list[Any], game: Any, dt) -> bool:
         """Handle user inputs"""
 
         # game is the class Game in the module component
@@ -31,6 +31,8 @@ class GameState():
                     game.player.update_direction("right")
                 if event.key == game.settings.controls.value["LEFT"]:
                     game.player.update_direction("left")
+
+        game.player.move(game.my_map, dt)
 
         return False
 

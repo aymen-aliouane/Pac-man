@@ -11,7 +11,8 @@ class Animator:
 
     def get_pos(self, x, y) -> tuple[int, int]:
         """translate the maze position into pixel position on maze"""
-        return (x * self.cell_size + self.left_offset, y * self.cell_size + self.top_offset)
+        return (x * self.cell_size + self.left_offset,
+                y * self.cell_size + self.top_offset)
 
 
     def get_pacman_frame(self) -> pygame.Surface:

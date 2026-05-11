@@ -1,3 +1,6 @@
+import time
+
+
 class PacMan:
     def __init__(self, x, y):
         """
@@ -16,6 +19,8 @@ class PacMan:
         self.direction = (1, 0)
         self.next_direction = (1, 0)
         self.lives = 3
+        self.speed = 5.0
+        self.move_timer = 0
         self.movement_relation = {
             "up": (0, -1),
             "right": (1, 0),
@@ -40,8 +45,21 @@ class PacMan:
         """
         self.next_direction = self.movement_relation[movement]
 
-    # def move(self, maze: list[list[int]]):        
-        
+    def move(self, maze: list[list[int]], dt: float):
+        self.move_timer += dt
+
+        second_per_cell = 1.0 / self.speed
+
+        if self.move_timer >= second_per_cell:
+            self.move_timer -= second_per_cell
+
+            if not self.is_wall(self.next_direction, maze):
+                self.direction = self.next_direction
+
+            if not self.is_wall(self.direction, maze):
+                self.x += self.direction[0]
+                self.y += self.direction[1]
+
 
 
 class Ghost:
