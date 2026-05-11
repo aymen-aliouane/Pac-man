@@ -1,5 +1,16 @@
 class PacMan:
     def __init__(self, x, y):
+        """
+        Initialise the player
+        
+        x: int = position x of the player
+        y: int = position y of the player
+        direction and next_direction: tuple[int, int] =
+        current and next direction of the player default to right
+        lives: int = remaining lives of the player
+        movement_relation: dict[str, tuple[int, int]] = relation between the
+        direction in str format and it's coordinate
+        """
         self.x = x
         self.y = y
         self.direction = (1, 0)
@@ -13,26 +24,23 @@ class PacMan:
             }
 
     def is_wall(self, movement, maze):
+        """
+        verify if there is a wall in the given direction
+        """
         if (movement == (0, -1) and maze[self.y][self.x] & 1 or
                 movement == (1, 0) and maze[self.y][self.x] & 2 or
                 movement == (0, 1) and maze[self.y][self.x] & 4 or
                 movement == (-1, 0) and maze[self.y][self.x] & 8):
-            print("there is a wall there with movement", movement)
             return True
-        print("no wall here with movement", movement)
         return False
 
-    def update_direction(self, movement, maze):
-        movement_coordinate = self.movement_relation[movement]
+    def update_direction(self, movement):
+        """
+        Update the next direction of pacman
+        """
+        self.next_direction = self.movement_relation[movement]
 
-        if not self.is_wall(movement_coordinate, maze):
-            self.next_direction = movement_coordinate
-
-    # def move(self, maze: list[list[int]]):
-
-
-####  bug here
-        
+    # def move(self, maze: list[list[int]]):        
         
 
 

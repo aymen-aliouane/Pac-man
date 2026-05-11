@@ -1,22 +1,23 @@
 from mazegenerator.mazegenerator import MazeGenerator
-from component import Game, Settings, DisplaySettings, Controls
-from build_maze import build_maze_layer
-from display_characters import Animator
-from characters import PacMan
+from game_logic.component import Game, Settings, DisplaySettings, Controls
+from displaying.build_maze import build_maze_layer
+from displaying.display_characters import Animator
+from game_logic.characters import PacMan
 
 import pygame
 
 
 def initialise(settings: Settings) -> pygame.Surface:
-    w, h = settings.width, settings.height
+    """Initialise the main layer of the game"""
 
-    screen = pygame.display.set_mode((w,h))
+    screen = pygame.display.set_mode((settings.width, settings.height))
     pygame.display.set_caption("Pac-man")
 
     return screen
 
 
 def game():
+    """The game loop, we initialise the variables in it and run the game"""
     pygame.init()
     maze = MazeGenerator((17, 15))
 
@@ -46,17 +47,25 @@ def game():
         # between this frame and the last frame
         dt = clock.tick(settings.fps)
 
+        # each frame we draw the image of the maze, then the player on top of it
+        # no need to iterate over all cells we have now maze_layer
         main_layer.blit(maze_layer, (0, 0))
         main_layer.blit(animator.get_pacman_frame(), animator.get_pos(player.x, player.y))
 
+        # game.state is the state of the player, it can be Game, Menu or Pause
+        # based on that it will handle input differently, but all of thems return
+        # True if the user ask to quit
         end = game.state.value.handle_input(pygame.event.get(), game)
         if end:
             break
 
+        # function to make, then maybe putting it in the game state part
         # player.move(maze.maze)
 
+        # update screen to user
         pygame.display.flip()
 
+    # quit cleanly
     pygame.quit()
 
 

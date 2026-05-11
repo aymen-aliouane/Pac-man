@@ -1,7 +1,17 @@
 import pygame
-from component import DisplaySettings
+from game_logic.component import DisplaySettings
 
-def build_maze_tiles(settings: DisplaySettings, maze: list[list[int]]):
+def build_maze_tiles(settings: DisplaySettings, maze: list[list[int]]) -> list[list[pygame.Surface]]:
+    """
+    Build the drawing of all the tiles of the maze.
+
+    Parameter:
+        settings: DisplaySettings = settings of the display
+        maze: list[list[int]] = the maze to build
+    
+    Return:
+        A double array of surfaces, one for each tile
+    """
     tiles = []
     cols = len(maze[0])
     rows = len(maze)
@@ -22,15 +32,18 @@ def build_maze_tiles(settings: DisplaySettings, maze: list[list[int]]):
     return tiles
 
 
-def build_tiles(cell, settings, right, top, left, bottom):
+def build_tiles(cell, settings: DisplaySettings, right: int, top, left, bottom) -> pygame.Surface:
     """
-    Build a Surface object for a given tile based on it's different walls.
-    this cell is normally containing inner and outer line, but we reduced
-    that to only the inner one, it looks better.
-    
-    right, top, left, bottom: the neighbor of the cell in each direction
-    cell_size: the size of a dispplayed cell
-    offset: the marge between the inner and outer line
+    Build a Surface object for a given tile based on it's different walls,
+    with a small offset to make a pacman like double wall 
+
+    Parameters:
+        cell: int = the cell to draw and return
+        settings: DisplaySettings = settings to use during the drawing
+        right, top, left, bottom: int = the neighbor of the cell in each direction
+
+    Return:
+        A pygame.Surface where the cell is drawn
     """
 
     # initialise the surface
@@ -38,7 +51,7 @@ def build_tiles(cell, settings, right, top, left, bottom):
     surface.fill((0,0,0))
     color = (33, 33, 222)  # Pac-Man blue
 
-    # define the limit of the inner line based on the offset
+    # define the limit of the line based on the offset
     offset = settings.offset
     edge = settings.cell_size - 1
     inner_edge = edge - offset
@@ -49,8 +62,7 @@ def build_tiles(cell, settings, right, top, left, bottom):
     has_right = lambda cell: cell & 2
     has_top = lambda cell: cell & 1
 
-    # draw the base walls and limiting the x and y based on the neighbors
-    # so we don't get some + intersections in the maze
+    # Draw the base wall based on offset and inner_edge
     if has_top(cell):
         x_start = offset if has_left(cell) else 0
         x_end = inner_edge if has_right(cell) else edge
@@ -123,6 +135,10 @@ def build_tiles(cell, settings, right, top, left, bottom):
 
 def build_maze_layer(settings: DisplaySettings,
                      maze: list[list[int]]) -> pygame.Surface:
+    """
+    Main class that build the entire maze layer, it return a surface
+    containing all cells drawn on it so we can blit it directly in the game
+    """
 
     #initialise the maze layer
     maze_layer = pygame.Surface((settings.width, settings.height))
@@ -130,6 +146,7 @@ def build_maze_layer(settings: DisplaySettings,
     # get a 2d array of surfaces representing each cell
     tiles = build_maze_tiles(settings, maze)
 
+    # draw a rectangle behind to look good
     pygame.draw.rect(maze_layer, (33, 33, 222),
                      (settings.margin_left - 2,
                       settings.margin_top - 2,
