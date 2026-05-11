@@ -1,20 +1,7 @@
-from mazegenerator.mazegenerator import MazeGenerator
-from component import Settings, Controls
 import pygame
-import time
+from component import DisplaySettings
 
-
-def initialise(settings: Settings) -> pygame.Surface:
-    pygame.init()
-    w, h = settings.width, settings.height
-
-    screen = pygame.display.set_mode((w,h))
-    pygame.display.set_caption("Pac-man")
-
-    return screen
-
-
-def build_maze_tiles(maze: list[list[int]], size=40):
+def build_maze_tiles(settings: DisplaySettings, maze: list[list[int]]):
     tiles = []
     cols = len(maze[0])
     rows = len(maze)
@@ -30,12 +17,12 @@ def build_maze_tiles(maze: list[list[int]], size=40):
             top = maze[y - 1][x] if y > 0 else 15
             bottom = maze[y + 1][x] if y < rows - 1 else 15
 
-            tiles[y].append(build_tiles(cell, right, top, left, bottom, size))
+            tiles[y].append(build_tiles(cell, settings, right, top, left, bottom))
 
     return tiles
 
 
-def build_tiles(cell, right, top, left, bottom, cell_size=40, offset=3):
+def build_tiles(cell, settings, right, top, left, bottom):
     """
     Build a Surface object for a given tile based on it's different walls.
     this cell is normally containing inner and outer line, but we reduced
@@ -47,12 +34,13 @@ def build_tiles(cell, right, top, left, bottom, cell_size=40, offset=3):
     """
 
     # initialise the surface
-    surface = pygame.surface.Surface((cell_size, cell_size))
+    surface = pygame.Surface((settings.cell_size, settings.cell_size))
     surface.fill((0,0,0))
     color = (33, 33, 222)  # Pac-Man blue
 
     # define the limit of the inner line based on the offset
-    edge = cell_size - 1
+    offset = settings.offset
+    edge = settings.cell_size - 1
     inner_edge = edge - offset
 
     # Lambda to know if the cell have or not a wall for each direction
@@ -133,52 +121,27 @@ def build_tiles(cell, right, top, left, bottom, cell_size=40, offset=3):
     return surface
 
 
+def build_maze_layer(settings: DisplaySettings,
+                     maze: list[list[int]]) -> pygame.Surface:
 
-def game():
-    settings = Settings(width=1900, height=900, max_time=120, controls=Controls.WASD)
-    background = initialise(settings)
-    player_surface = pygame.Surface((settings.width, settings.height), pygame.SRCALPHA)
-    maze = MazeGenerator((17, 15))
-    run = True
-    clock = pygame.time.Clock()
-    past_time = time.time()
-    FPS = 60
+    #initialise the maze layer
+    maze_layer = pygame.Surface((settings.width, settings.height))
 
-    size = min(settings.width / len(maze.maze[0]), settings.height / len(maze.maze)) - 2
-    margin_left = (settings.width - size * len(maze.maze[0])) // 2
-    margin_top = (settings.height - size * len(maze.maze)) // 2
-    tiles = build_maze_tiles(maze.maze, size)
+    # get a 2d array of surfaces representing each cell
+    tiles = build_maze_tiles(settings, maze)
 
-    # adding all the cells surfaces on top of the background surface, so we only draw one
-    # background rather that multiple ones
-    pygame.draw.rect(background, (33, 33, 222), (margin_left - 2, margin_top - 2, size * len(maze.maze[0]) + 4, size * len(maze.maze) + 4) )
+    pygame.draw.rect(maze_layer, (33, 33, 222),
+                     (settings.margin_left - 2,
+                      settings.margin_top - 2,
+                      settings.cell_size * len(maze[0]) + 4,
+                      settings.cell_size * len(maze) + 4))
+
+    # adding all the cells surfaces on top of the background surface
+    # doing that we only draw one background rather that multiple ones
     for y, row in enumerate(tiles):
         for x, cell in enumerate(row):
-            background.blit(cell, (x * size + margin_left, y * size + margin_top))
+            maze_layer.blit(cell,
+                            (x * settings.cell_size + settings.margin_left,
+                             y * settings.cell_size + settings.margin_top))
 
-
-    while run:
-        clock.tick(FPS)
-
-        actual_time = time.time()
-        dt = actual_time - past_time
-        past_time = actual_time
-        
-        background.blit(background, (0, 0))
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                break
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    run = False
-
-
-        pygame.display.flip()
-        # replace it later with pygame.display.update() for optimisation
-    pygame.quit()
-
-
-if __name__ == "__main__":
-    game()
+    return maze_layer
