@@ -1,0 +1,133 @@
+from displaying import PacManRenderer, LayerRenderer, GhostRenderer
+from game_logic.component import Game, Settings, DisplaySettings, Controls
+from game_logic.characters import PacMan, Ghost
+from maze.pacgums import get_pacgums_map
+from maze.build_maze import build_maze_layer
+from maze.maze_construct import construct_maze
+
+import json
+
+
+def load_file(file_path: str) -> list:
+    """Load the maze from a file, it will be called in the main file"""
+    try:
+        with open(file_path, "r") as f:
+                config = json.load(f)
+    except json.JSONDecodeError:
+        raise ValueError("Invalid JSON file")
+    except FileNotFoundError:
+        raise ValueError("File not found")
+    except PermissionError:
+        raise ValueError("Permission denied")
+    except Exception as e:
+        raise ValueError(f"An error occurred: {e}")
+
+    return config
+
+
+def init_game(file_path: str) -> Game:
+    """Initialise the game, it will be called in the main file"""
+
+    config = load_file(file_path)
+    config = verif_settings(config)
+
+    maze = construct_maze(config.get("width"),
+                          config.get("height"),
+                          config.get("seed"))
+    pacgums = get_pacgums_map(maze.maze)
+
+    player = PacMan(0, 0, maze.maze)
+    
+    settings = Settings(
+         seed=config.get("seed"),
+         point_per_pacgum=config.get("point_per_pacgum"),
+         point_per_ghost=config.get("point_per_ghost"),
+         point_per_super_pacgum=config.get("point_per_super_pacgum"),
+         max_time=config.get("max_time"),
+         controls=Controls(config.get("controls")),
+         fps=config.get("fps"))
+
+    display_settings = DisplaySettings(width=800, height=600)
+    display_settings.update_displaying_parameter(maze.maze)
+
+    maze_layer = build_maze_layer(display_settings, maze.maze)
+    layer_renderer = LayerRenderer(display_settings, maze_layer)
+    pacman_renderer = PacManRenderer(display_settings)
+
+    game = Game(my_map=maze.maze,
+                pacgums=pacgums,
+                player=player,
+                ghosts=[],
+                settings=settings,
+                display=display_settings,
+                layer_renderer=layer_renderer,
+                state=None,
+                pacman_renderer=pacman_renderer)
+
+    return game
+
+
+def verif_settings(settings: dict[str, int]):
+    """Function to verify the settings, it will be called in the main file"""
+    if(settings.get("point_per_pacgum") is None or
+            not isinstance(settings["point_per_pacgum"], int) or
+            settings["point_per_pacgum"] < 0):
+        print("point_per_pacgum must be a positive integer superior to 100")
+        settings["point_per_pacgum"] = 10
+
+    if (settings.get("point_per_ghost") is None or
+            not isinstance(settings["point_per_ghost"], int) or
+            settings["point_per_ghost"] < 0):
+        print("point_per_ghost must be a positive integer")
+        settings["point_per_ghost"] = 200
+
+    if (settings.get("point_per_super_pacgum") is None or
+            not isinstance(settings["point_per_super_pacgum"], int) or
+            settings["point_per_super_pacgum"] < 0):
+        print("point_per_super_pacgum must be a positive integer")
+        settings["point_per_super_pacgum"] = 50
+
+    if (settings.get("max_time") is None or
+            not isinstance(settings["max_time"], int) or
+            settings["max_time"] <= 100):
+        print("max_time must be a positive integer")
+        settings["max_time"] = 300
+
+    if (settings.get("seed") is None or
+            not isinstance(settings["seed"], int) or
+            settings["seed"] < 0):
+        print("seed must be a positive integer")
+        settings["seed"] = 0
+
+    if (settings.get("controls") is None or
+            not isinstance(settings["controls"], str) or
+            settings["controls"] not in {"WASD", "ZQSD", "ARROWS"}):
+        print("controls must be one of the following: WASD, ZQSD, ARROWS")
+        settings["controls"] = Controls.WASD
+    else:
+        if settings["controls"] == "WASD":
+            settings["controls"] = Controls.WASD
+        elif settings["controls"] == "ZQSD":
+            settings["controls"] = Controls.ZQSD
+        elif settings["controls"] == "ARROWS":
+            settings["controls"] = Controls.ARROWS
+
+    if (settings.get("fps") is None or
+            not isinstance(settings["fps"], int) or
+            settings["fps"] <= 0):
+        print("fps must be a positive integer")
+        settings["fps"] = 60
+
+    if (settings.get("width") is None or
+            not isinstance(settings["width"], int) or
+            settings["width"] < 10 or settings["width"] > 20):
+        print("Width must be a number between 10 and 20")
+        settings["width"] = 15
+
+    if (settings.get("height") is None or
+            not isinstance(settings["height"], int) or
+            settings["height"] < 10 or settings["height"] > 20):
+        print("Height must be a number between 10 and 20")
+        settings["height"] = 15
+
+    return settings

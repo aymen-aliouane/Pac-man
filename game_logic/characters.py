@@ -1,8 +1,5 @@
-import time
-
-
 class PacMan:
-    def __init__(self, x, y):
+    def __init__(self, x, y, maze):
         """
         Initialise the player
         
@@ -14,13 +11,14 @@ class PacMan:
         movement_relation: dict[str, tuple[int, int]] = relation between the
         direction in str format and it's coordinate
         """
-        self.x = x
-        self.y = y
+        self.cell_from = (x, y)
+        self.cell_to = (x, y)
+        self.maze = maze
         self.direction = (1, 0)
         self.next_direction = (1, 0)
         self.lives = 3
-        self.speed = 5.0
-        self.move_timer = 0
+        self.move_timer = 0.0
+        self.speed = 4.0
         self.movement_relation = {
             "up": (0, -1),
             "right": (1, 0),
@@ -28,14 +26,15 @@ class PacMan:
             "left": (-1, 0)
             }
 
-    def is_wall(self, movement, maze):
+    def is_wall(self, movement):
         """
         verify if there is a wall in the given direction
         """
-        if (movement == (0, -1) and maze[self.y][self.x] & 1 or
-                movement == (1, 0) and maze[self.y][self.x] & 2 or
-                movement == (0, 1) and maze[self.y][self.x] & 4 or
-                movement == (-1, 0) and maze[self.y][self.x] & 8):
+        x, y = self.cell_from
+        if (movement == (0, -1) and self.maze[y][x] & 1 or
+                movement == (1, 0) and self.maze[y][x] & 2 or
+                movement == (0, 1) and self.maze[y][x] & 4 or
+                movement == (-1, 0) and self.maze[y][x] & 8):
             return True
         return False
 
@@ -45,20 +44,26 @@ class PacMan:
         """
         self.next_direction = self.movement_relation[movement]
 
-    def move(self, maze: list[list[int]], dt: float):
-        self.move_timer += dt
+    def is_alive(self):
+        return self.lives > 0
 
-        second_per_cell = 1.0 / self.speed
-
-        if self.move_timer >= second_per_cell:
-            self.move_timer -= second_per_cell
-
-            if not self.is_wall(self.next_direction, maze):
+    def move(self, dt: float) -> tuple[int, int]:
+        if self.cell_from == self.cell_to:
+            if (self.next_direction != self.direction and
+                    not self.is_wall(self.next_direction)):
                 self.direction = self.next_direction
 
-            if not self.is_wall(self.direction, maze):
-                self.x += self.direction[0]
-                self.y += self.direction[1]
+            if not self.is_wall(self.direction):
+                self.cell_to = (self.cell_from[0] + self.direction[0],
+                                self.cell_from[1] + self.direction[1])
+        else:
+            self.move_timer += dt * self.speed
+
+        if self.move_timer >= 1.0:
+            self.cell_from = self.cell_to
+            self.move_timer -= 1.0
+
+        return self.cell_from
 
 
 
