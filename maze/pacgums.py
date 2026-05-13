@@ -23,6 +23,7 @@ def pacgums_displayer(pacgums: list[list[int]],
 
     return gums
 
+
 def get_pacgums_map(maze: list[list[int]]) -> list[list[int]]:
     """Get the map of pacgums, 0 for no pacgum, 1 for normal pacgum and 2 for super pacgum"""
     pacgums = []

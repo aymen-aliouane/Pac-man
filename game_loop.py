@@ -1,4 +1,4 @@
-from game_logic.component import Settings
+from components.game import Settings
 from initialise.init_game import init_game
 import pygame
 import sys
@@ -15,11 +15,14 @@ def initialise(settings: Settings) -> pygame.Surface:
 
 def game_loop():
     """The game loop, we initialise the variables in it and run the game"""
-    from states import GameState
+    from game_logic.states import GameState
     pygame.init()
 
-    # use sys
-    game = init_game("config.json")
+    if len(sys.argv) != 2:
+        print("Usage: python3 game.py <config_file>")
+        sys.exit(1)
+    print(sys.argv[1])
+    game = init_game(sys.argv[1])
     game.state = GameState()
 
     # main layer is the main page, maze is the map

@@ -1,5 +1,5 @@
+from game_logic.ghosts import Ghost
 import pygame
-from game_logic.characters import Ghost
 
 
 class GhostRenderer:

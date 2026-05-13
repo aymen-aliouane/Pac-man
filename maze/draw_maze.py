@@ -1,5 +1,5 @@
 import pygame
-from game_logic.component import DisplaySettings
+from components.game import DisplaySettings
 
 def build_maze_tiles(settings: DisplaySettings, maze: list[list[int]]) -> list[list[pygame.Surface]]:
     """

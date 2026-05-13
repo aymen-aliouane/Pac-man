@@ -1,4 +1,4 @@
-from game_logic.component import Game
+from components.game import Game
 import pygame
 
 
@@ -10,6 +10,7 @@ class MenuState():
 class VictoryState():
     """Class that handle the user events in the menue"""
     pass
+
 
 class LostState():
     """Class that handle the user events in the menue"""
@@ -53,7 +54,6 @@ class GameState():
             game.pacgum_eaten(cell_to_update)
 
             #collision with pacgums and ghosts
-            pass
 
         else:
             game.state = LostState()

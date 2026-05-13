@@ -1,4 +1,4 @@
-from game_logic.characters import PacMan
+from game_logic.pacman import PacMan
 import pygame
 
 

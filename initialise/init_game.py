@@ -1,8 +1,8 @@
 from displaying import PacManRenderer, LayerRenderer, GhostRenderer
-from game_logic.component import Game, Settings, DisplaySettings, Controls
-from game_logic.characters import PacMan, Ghost
+from components import Game, Settings, DisplaySettings, Controls
+from game_logic import PacMan, Ghost
 from maze.pacgums import get_pacgums_map
-from maze.build_maze import build_maze_layer
+from maze.draw_maze import build_maze_layer
 from maze.maze_construct import construct_maze
 
 import json
