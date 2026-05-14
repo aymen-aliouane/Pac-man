@@ -38,10 +38,12 @@ class GameState():
         if game.player.is_alive():
 
             player_cell = game.player.move(dt)
-            ghost_cell = game.ghosts[0].move(dt)
 
-            if not game.ghosts[0].path or game.ghosts[0].path[-1] != player_cell:
-                game.ghosts[0].update_path(player_cell, game.my_map)
+            for ghost in game.ghosts:
+                ghost.move(dt)
+                
+                if not ghost.path or ghost.path[-1] != player_cell:
+                    ghost.update_path(player_cell, game.my_map)
 
             game.pacgum_eaten(player_cell)
             #collision with pacgums and ghosts
@@ -52,4 +54,5 @@ class GameState():
     def render(self, game: Game, screen: pygame.Surface):
         game.layer_renderer.render(screen, game)
         game.pacman_renderer.render(screen, game.player)
-        game.ghosts_renderer.render(screen, game.ghosts[0])
+        for ghost in game.ghosts:
+            game.ghosts_renderer.render(screen, ghost)

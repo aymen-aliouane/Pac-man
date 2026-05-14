@@ -36,7 +36,11 @@ def init_game(file_path: str) -> Game:
                           config.get("seed"))
     pacgums = get_pacgums_map(maze.maze)
 
-    player = PacMan(len(maze.maze[0]) // 2, len(maze.maze) // 2, maze.maze)
+    pacman_pos = [len(maze.maze[0]) // 2, len(maze.maze) // 2]
+
+    if maze.maze[pacman_pos[1]][pacman_pos[0]] == 15:
+        pacman_pos[0] -= 1
+    player = PacMan(pacman_pos[0], pacman_pos[1], maze.maze)
     
     settings = Settings(
          seed=config.get("seed"),
@@ -58,7 +62,11 @@ def init_game(file_path: str) -> Game:
     game = Game(my_map=maze.maze,
                 pacgums=pacgums,
                 player=player,
-                ghosts=[Ghost("blinky", (0, 0))],
+                ghosts=[Ghost("blinky", (0, 0)),
+                        Ghost("inky", (0, len(maze.maze) - 1)),
+                        Ghost("pinky", (len(maze.maze[0]) - 1, len(maze.maze) - 1)),
+                        Ghost("clyde", (len(maze.maze[0]) - 1, 0))
+                    ],
                 settings=settings,
                 display=display_settings,
                 layer_renderer=layer_renderer,

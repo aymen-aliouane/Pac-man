@@ -21,7 +21,6 @@ def game_loop():
     if len(sys.argv) != 2:
         print("Usage: python3 game.py <config_file>")
         sys.exit(1)
-    print(sys.argv[1])
     game = init_game(sys.argv[1])
     game.state = GameState()
 
