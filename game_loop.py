@@ -15,7 +15,7 @@ def initialise(settings: Settings) -> pygame.Surface:
 
 def game_loop():
     """The game loop, we initialise the variables in it and run the game"""
-    from states.states import GameState
+    from states.game_states import GameState
     pygame.init()
 
     if len(sys.argv) != 2:

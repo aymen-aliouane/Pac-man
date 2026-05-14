@@ -15,14 +15,14 @@ class PacManRenderer:
         self.last_angle = 0
         self.frames = self.load_frames()
 
-    def load_frames(self):
+    def load_frames(self) -> list[pygame.Surface]:
         """load the frames of pacman, and scale them to the cell size"""
         frames = []
         for i in range(4):
             frame = pygame.image.load(f"sprite/other/pacman_{i}.png")
             frame = pygame.transform.scale(frame,
-                                        (self.settings.cell_size / 4,
-                                         self.settings.cell_size / 4))
+                                        (self.settings.cell_size // 2,
+                                         self.settings.cell_size // 2))
             frames.append(frame)
         return frames
 
@@ -31,27 +31,27 @@ class PacManRenderer:
         return ((tup[0] * self.settings.cell_size + self.settings.margin_left + self.settings.offset + self.settings.cell_size // 8),
                  tup[1] * self.settings.cell_size + self.settings.margin_top + self.settings.offset + self.settings.cell_size // 8)
 
-    def get_pacman_frame(self, cell_from: tuple[int, int], cell_to: tuple[int, int]) -> pygame.Surface:
+    def get_pacman_frame(self, cell_from: tuple[int, int],
+                         cell_to: tuple[int, int],
+                         move_timer: float) -> pygame.Surface:
         """
         get pacman frame will return the new frame of pacman to display
         """
+
         if cell_to != cell_from:
             direction = (cell_to[0] - cell_from[0],
                         cell_to[1] - cell_from[1])
             self.last_angle = self.angles[direction]
 
-        pacman = pygame.image.load("sprite/other/pacman_1.png")
-        pacman = pygame.transform.scale(pacman,
-                                        (self.settings.cell_size // 2,
-                                         self.settings.cell_size // 2))
+        frame = self.frames[int(move_timer * len(self.frames))]
 
-        pacman = pygame.transform.rotate(pacman, self.last_angle)
+        pacman = pygame.transform.rotate(frame, self.last_angle)
 
         return pacman
 
     def render(self, main_layer: pygame.Surface, pacman: PacMan):
         """render pacman on the main layer"""
-        frame = self.get_pacman_frame(pacman.cell_from, pacman.cell_to)
+        frame = self.get_pacman_frame(pacman.cell_from, pacman.cell_to, pacman.move_timer)
         main_layer.blit(frame,
                         self.lerp(pacman.cell_from,
                                        pacman.cell_to,
@@ -64,4 +64,6 @@ class PacManRenderer:
         pos = self.translate_pos(pos)
         return pos
 
+    # def lerp_angle(self, angle_start: int, angle_end: int, t: float):
+    #     return (angle_start + (angle_end - angle_start) * t)
 

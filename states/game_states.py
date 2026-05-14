@@ -1,20 +1,6 @@
 from components.game import Game
+from .lost_state import LostState
 import pygame
-
-
-class MenuState():
-    """Class that handle the user events in the menue"""
-    pass
-
-
-class VictoryState():
-    """Class that handle the user events in the menue"""
-    pass
-
-
-class LostState():
-    """Class that handle the user events in the menue"""
-    pass
 
 
 class GameState():
@@ -44,15 +30,20 @@ class GameState():
                 if event.key == game.settings.controls.value["LEFT"]:
                     game.player.update_direction("left")
 
+
         return False
 
     def update(self, game: Game, dt: float):
 
         if game.player.is_alive():
 
-            cell_to_update = game.player.move(dt)
-            game.pacgum_eaten(cell_to_update)
+            player_cell = game.player.move(dt)
+            ghost_cell = game.ghosts[0].move(dt)
 
+            if not game.ghosts[0].path or game.ghosts[0].path[-1] != player_cell:
+                game.ghosts[0].update_path(player_cell, game.my_map)
+
+            game.pacgum_eaten(player_cell)
             #collision with pacgums and ghosts
 
         else:
@@ -61,9 +52,4 @@ class GameState():
     def render(self, game: Game, screen: pygame.Surface):
         game.layer_renderer.render(screen, game)
         game.pacman_renderer.render(screen, game.player)
-
-
-class PauseState():
-    """Class that handle the user events when paused"""
-    pass
-
+        game.ghosts_renderer.render(screen, game.ghosts[0])

@@ -36,7 +36,7 @@ def init_game(file_path: str) -> Game:
                           config.get("seed"))
     pacgums = get_pacgums_map(maze.maze)
 
-    player = PacMan(0, 0, maze.maze)
+    player = PacMan(len(maze.maze[0]) // 2, len(maze.maze) // 2, maze.maze)
     
     settings = Settings(
          seed=config.get("seed"),
@@ -47,22 +47,24 @@ def init_game(file_path: str) -> Game:
          controls=Controls(config.get("controls")),
          fps=config.get("fps"))
 
-    display_settings = DisplaySettings(width=800, height=600)
+    display_settings = DisplaySettings(width=1000, height=900)
     display_settings.update_displaying_parameter(maze.maze)
 
     maze_layer = build_maze_layer(display_settings, maze.maze)
     layer_renderer = LayerRenderer(display_settings, maze_layer)
     pacman_renderer = PacManRenderer(display_settings)
+    ghosts_renderer = GhostRenderer(display_settings)
 
     game = Game(my_map=maze.maze,
                 pacgums=pacgums,
                 player=player,
-                ghosts=[],
+                ghosts=[Ghost("blinky", (0, 0))],
                 settings=settings,
                 display=display_settings,
                 layer_renderer=layer_renderer,
                 state=None,
-                pacman_renderer=pacman_renderer)
+                pacman_renderer=pacman_renderer,
+                ghosts_renderer=ghosts_renderer)
 
     return game
 

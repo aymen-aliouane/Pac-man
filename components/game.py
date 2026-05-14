@@ -23,7 +23,7 @@ class Game:
     layer_renderer: LayerRenderer
 
     pacman_renderer: PacManRenderer
-    ghosts_renderer: GhostRenderer = None
+    ghosts_renderer: GhostRenderer
 
     score: int = 0
     level: int = 1
