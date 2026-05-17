@@ -2,7 +2,7 @@ install:
 	uv sync
 
 run:
-	uv run python3 game_loop.py config.json
+	uv run python3 main.py config.json
 
 clean:
 	find . -type f -name "*.py[co]" -delete

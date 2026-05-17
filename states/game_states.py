@@ -2,6 +2,7 @@ from components.game import Game
 from .lost_state import LostState
 from .victory_state import VictoryState
 from .pause_state import PauseState
+
 import pygame
 
 
