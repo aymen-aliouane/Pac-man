@@ -4,6 +4,7 @@ from game_logic import PacMan, Ghost
 from maze.pacgums import get_pacgums_map
 from maze.draw_maze import build_maze_layer
 from maze.maze_construct import construct_maze
+import pygame
 
 import json
 
@@ -49,10 +50,9 @@ def init_game(file_path: str) -> Game:
          point_per_super_pacgum=config.get("point_per_super_pacgum"),
          max_time=config.get("max_time"),
          controls=Controls(config.get("controls")),
-         fps=config.get("fps"),
-         cheats=[Cheat.INVINCIBLE])
+         fps=config.get("fps"))
 
-    display_settings = DisplaySettings(width=1000, height=900)
+    display_settings = DisplaySettings(width=800, height=800)
     display_settings.update_displaying_parameter(maze.maze)
 
     maze_layer = build_maze_layer(display_settings, maze.maze)

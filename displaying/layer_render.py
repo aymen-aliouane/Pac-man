@@ -40,3 +40,7 @@ class LayerRenderer:
                 ((cell[0] * self.settings.cell_size) + self.settings.margin_left - ind * 4,
                  (cell[1] * self.settings.cell_size) + self.settings.margin_top - ind * 4),
                  str(game.settings.point_per_ghost), (255, 255, 255))
+        self.settings.font.render_to(
+            main_layer,
+            (10,10),
+                str(game.score), (255, 255, 255))
