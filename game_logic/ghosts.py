@@ -1,5 +1,6 @@
 import heapq
 import math
+import random
 from collections import deque
 
 
@@ -21,11 +22,12 @@ class Ghost:
     def __init__(self, name, pos: tuple[int, int]):
         self.name = name
         self.cell = pos
+        self.initial_corner = pos
         self.speed = 3.0
         self.move_timer = 0.0
 
         self.alive = True
-        self.edible = False
+        self.frightened_timer = 0.0
         self.path: deque[tuple[int, int]] = []
 
     def get_path(self, objective: tuple[int, int], maze: list[list[int]]):
@@ -64,12 +66,68 @@ class Ghost:
 
         return deque(final_path)
 
-    def update_path(self, objective: tuple[int, int], maze: list[list[int]]):
-        if self.move_timer == 0.0:
-            self.path = self.get_path(objective, maze)
+    def update_path(self, objective: tuple[int, int],
+                    direction: tuple[int, int], maze: list[list[int]]):
+        if not self.alive:
+            if self.path:
+                return
+            elif self.cell != self.initial_corner:
+                self.path = self.get_path(self.initial_corner, maze)
+            else:
+                self.alive = True
 
+        elif self.frightened_timer > 0.0:
+            if self.path:
+                return
+
+            next_pos = (random.randint(0, len(maze[0]) - 1), random.randint(0, len(maze) - 1))
+            while maze[next_pos[1]][next_pos[0]] == 15:
+                next_pos = (random.randint(0, len(maze[0]) - 1), random.randint(0, len(maze) - 1))
+
+            self.path = self.get_path(next_pos, maze)
+
+
+        elif self.move_timer == 0.0:
+            if self.name == "blinky":
+                self.path = self.get_path(objective, maze)
+
+            elif self.name == "pinky":
+                next_possible = (objective[0] + direction[0] * 2, objective[1] + direction[1] * 2)
+                if (0 <= next_possible[0] <= len(maze[0]) - 1 and
+                        0 <= next_possible[1] <= len(maze) - 1 and
+                        maze[next_possible[1]][next_possible[0]] != 15):
+                    self.path = self.get_path(next_possible, maze)
+                else:
+                    self.path = self.get_path(objective, maze)
+
+            elif self.name == "clyde":
+                if (self.cell[0] - objective[0] >= 4 or self.cell[0] - objective[0] <= -4 or
+                        self.cell[1] - objective[1] >= 4 or self.cell[1] - objective[1] <= -4):
+                    self.path = self.get_path(objective, maze)
+                else:
+                    self.path = self.get_path(self.initial_corner, maze)
+
+            elif self.name == "inky":
+                if self.path:
+                    return
+                next_pos = (random.randint(0, len(maze[0]) - 1), random.randint(0, len(maze) - 1))
+                if maze[next_pos[1]][next_pos[0]] != 15:
+                    self.path = self.get_path(next_pos, maze)
+                else:
+                    self.path = self.get_path(objective, maze)
+
+    def update_state(self):
+        if self.frightened_timer > 0.0:
+            self.speed = 2.0
+        elif not self.alive:
+            self.speed = 5.0
+        else:
+            self.speed = 3.0
+            self.frightened_timer = 0.0
 
     def move(self, dt: float) -> tuple[int, int]:
+        if self.frightened_timer >= 0.0:
+            self.frightened_timer -= dt
         if not self.path:
             return self.cell
 
@@ -78,6 +136,8 @@ class Ghost:
         if self.move_timer >= 1.0:
             self.move_timer = 0.0
             self.cell = self.path.popleft()
+
+        self.update_state()
 
         return self.cell
 

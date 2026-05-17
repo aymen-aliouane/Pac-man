@@ -1,27 +1,25 @@
 import pygame
 
 
-def pacgums_displayer(pacgums: list[list[int]],
-                      width: int, height: int,
-                      cell_size: int,
-                      margin_left: int, margin_top: int) -> pygame.Surface:
+def update_pacgum_layer(layer: pygame.Surface,
+                        pacgums: list[list[int]],
+                        cell_size: int,
+                        margin_left: int, margin_top: int):
     """display the pacgums on the screen"""
-    gums = pygame.Surface((width, height), pygame.SRCALPHA)
+    layer.fill((0, 0, 0, 0))
 
     for y in range(len(pacgums)):
         for x in range(len(pacgums[0])):
             cell = pacgums[y][x]
             if cell:
                 if cell == 1:
-                    radius = 3
+                    radius = cell_size // 18
                 elif cell == 2:
-                    radius = 4
-                pygame.draw.circle(gums, (255,255,255),
+                    radius = cell_size // 10
+                pygame.draw.circle(layer, (222, 161, 133),
                                    (x * cell_size + margin_left + cell_size // 2,
                                     y * cell_size + margin_top + cell_size // 2),
                                     radius)
-
-    return gums
 
 
 def get_pacgums_map(maze: list[list[int]]) -> list[list[int]]:

@@ -52,6 +52,13 @@ class PacManRenderer:
     def render(self, main_layer: pygame.Surface, pacman: PacMan):
         """render pacman on the main layer"""
         frame = self.get_pacman_frame(pacman.cell_from, pacman.cell_to, pacman.move_timer)
+
+        # debug to see the cell of pacman
+        # cell = pygame.Surface((self.settings.cell_size, self.settings.cell_size))
+        # cell.fill((255, 0, 0))
+        # main_layer.blit(cell, (pacman.cell_from[0] * self.settings.cell_size + self.settings.margin_left,
+        #                        pacman.cell_from[1] * self.settings.cell_size + self.settings.margin_top))
+
         main_layer.blit(frame,
                         self.lerp(pacman.cell_from,
                                        pacman.cell_to,

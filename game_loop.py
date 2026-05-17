@@ -1,6 +1,7 @@
 from components.game import Settings
 from initialise.init_game import init_game
 import pygame
+import pygame.freetype
 import sys
 
 

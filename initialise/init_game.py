@@ -1,5 +1,5 @@
 from displaying import PacManRenderer, LayerRenderer, GhostRenderer
-from components import Game, Settings, DisplaySettings, Controls
+from components import Game, Settings, DisplaySettings, Controls, Cheat
 from game_logic import PacMan, Ghost
 from maze.pacgums import get_pacgums_map
 from maze.draw_maze import build_maze_layer
@@ -41,7 +41,7 @@ def init_game(file_path: str) -> Game:
     if maze.maze[pacman_pos[1]][pacman_pos[0]] == 15:
         pacman_pos[0] -= 1
     player = PacMan(pacman_pos[0], pacman_pos[1], maze.maze)
-    
+
     settings = Settings(
          seed=config.get("seed"),
          point_per_pacgum=config.get("point_per_pacgum"),
@@ -49,7 +49,8 @@ def init_game(file_path: str) -> Game:
          point_per_super_pacgum=config.get("point_per_super_pacgum"),
          max_time=config.get("max_time"),
          controls=Controls(config.get("controls")),
-         fps=config.get("fps"))
+         fps=config.get("fps"),
+         cheats=[Cheat.INVINCIBLE])
 
     display_settings = DisplaySettings(width=1000, height=900)
     display_settings.update_displaying_parameter(maze.maze)

@@ -27,7 +27,7 @@ class Controls(Enum):
 class Cheat(Enum):
     """Available cheats"""
 
-    INVICIBLE = "invincible"
+    INVINCIBLE = "invincible"
     NO_COLLISIONS = "no_collision"
     SKIP_LEVEL = "skip_level"
     INCREASE_SPEED = "increase_speed"

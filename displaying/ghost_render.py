@@ -12,7 +12,7 @@ class GhostRenderer:
                                "clyde": (0, 1)
                                }
         self.frames = {}
-        for name in ["blinky", "inky", "pinky", "clyde"]:
+        for name in ["blinky", "inky", "pinky", "clyde", "dead", "frightened"]:
             self.frames[name] = self.load_frames(name)
 
     def load_frames(self, name) -> dict[str, list[pygame.Surface]]:
@@ -24,18 +24,41 @@ class GhostRenderer:
             "right": []
         }
 
-        for direction in frames.keys():
-            for i in range(2):
+        if name not in {"dead", "frightened"}:
+            for direction in frames.keys():
+                for i in range(2):
+                    frame = pygame.image.load(
+                            f"sprite/{name}/{name}_{direction}_{i}.png"
+                            )
+                    frame = pygame.transform.scale(frame,
+                                                (self.settings.cell_size // 2,
+                                                self.settings.cell_size // 2))
+                    frames[direction].append(frame)
+        elif name == "dead":
+            for direction in frames.keys():
                 frame = pygame.image.load(
-                        f"sprite/{name}/{name}_{direction}_{i}.png"
+                        f"sprite/other/{name}_{direction}.png"
                         )
                 frame = pygame.transform.scale(frame,
-                                            (self.settings.cell_size // 2,
-                                            self.settings.cell_size // 2))
+                                            (self.settings.cell_size // 1.7,
+                                            self.settings.cell_size // 1.7))
                 frames[direction].append(frame)
+        elif name == "frightened":
+            for i in range(2):
+                frame = pygame.image.load(
+                        f"sprite/other/{name}_{i}.png"
+                        )
+                frame = pygame.transform.scale(frame,
+                                            (self.settings.cell_size // 1.8,
+                                            self.settings.cell_size // 1.8))
+                frames["up"].append(frame)
+                frames["down"].append(frame)
+                frames["left"].append(frame)
+                frames["right"].append(frame)
         return frames
 
     def get_ghost_frame(self, name: str,
+                        state: str,
                         cell_from: tuple[int, int],
                         cell_to: tuple[int, int],
                         move_timer: float) -> pygame.Surface:
@@ -47,9 +70,15 @@ class GhostRenderer:
                                          cell_to[1] - cell_from[1])
 
         str_direction = self.get_str_direction(self.last_direction[name])
+
         frames_len = len(self.frames[name][str_direction])
 
-        ghost = self.frames[name][str_direction][int(move_timer * frames_len)]
+        if state == "normal":
+            ghost = self.frames[name][str_direction][int(move_timer * frames_len)]
+        elif state == "frightened":
+            ghost = self.frames["frightened"][str_direction][int(move_timer * frames_len)]
+        elif state == "dead":
+            ghost = self.frames["dead"][str_direction][0]
 
         return ghost
 
@@ -57,7 +86,19 @@ class GhostRenderer:
         """render pacman on the main layer"""
         next_cell = ghost.path[0] if ghost.path else ghost.cell
 
-        frame = self.get_ghost_frame(ghost.name, ghost.cell, next_cell, ghost.move_timer)
+        if not ghost.alive:
+            frame = self.get_ghost_frame(ghost.name, "dead", ghost.cell, next_cell, ghost.move_timer)
+        elif ghost.frightened_timer > 0.0:
+            frame = self.get_ghost_frame(ghost.name, "frightened", ghost.cell, next_cell, ghost.move_timer)
+        else:
+            frame = self.get_ghost_frame(ghost.name, "normal", ghost.cell, next_cell, ghost.move_timer)
+
+        # debug to see the cell of ghost
+        # cell = pygame.Surface((self.settings.cell_size, self.settings.cell_size))
+        # cell.fill((0, 255, 0))
+        # main_layer.blit(cell, (ghost.cell[0] * self.settings.cell_size + self.settings.margin_left,
+        #                        ghost.cell[1] * self.settings.cell_size + self.settings.margin_top))
+
         main_layer.blit(frame,
                         self.lerp(ghost.cell,
                                   next_cell,

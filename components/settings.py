@@ -1,10 +1,12 @@
 from components.support_class import Controls, Cheat
 from dataclasses import dataclass, field
+import pygame.freetype
 
 
 @dataclass
 class DisplaySettings:
     """Settings of the displaying"""
+    pygame.freetype.init()
     width: int
     height: int
     offset: int = 6
@@ -20,6 +22,7 @@ class DisplaySettings:
                              self.height / len(maze_map) - 1))
         self.margin_left = (self.width - self.cell_size * len(maze_map[0])) // 2
         self.margin_top = (self.height - self.cell_size * len(maze_map)) // 2
+        self.font: pygame.freetype.Font = pygame.freetype.Font("sprite/other/BoldPixels.ttf", self.cell_size // 2)
 
 
 @dataclass

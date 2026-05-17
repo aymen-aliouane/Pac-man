@@ -2,7 +2,7 @@
     "max_time": 120,
     "controls": "WASD",
     "fps": 60,
-    "width": 14,
+    "width": 15,
     "height": 15,
     "high_score_file": "high_score.txt",
     "point_per_pacgum": 10,
