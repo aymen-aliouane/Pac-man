@@ -1,2 +1,2 @@
-from .ghosts import Ghost
-from .pacman import PacMan
+from .ghosts import Ghost  # noqa: F401
+from .pacman import PacMan  # noqa: F401

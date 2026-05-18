@@ -16,3 +16,13 @@ clean:
 	find . -type d -name "dist" -exec rm -rf {} +
 	find . -type d -name "*.egg-info" -exec rm -rf {} +
 	find . -type d -name "*.eggs" -exec rm -rf {} +
+
+lint: 
+	flake8 . --exclude=.venv
+	mypy . --warn-return-any
+	--warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs
+	--check-untyped-defs
+
+lint-strict:
+	flake8 . --exclude=.venv
+	mypy . --strict

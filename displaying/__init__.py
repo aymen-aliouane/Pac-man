@@ -1,3 +1,3 @@
-from displaying.layer_render import LayerRenderer
-from displaying.pacman_render import PacManRenderer
-from displaying.ghost_render import GhostRenderer
+from .layer_render import LayerRenderer  # noqa: F401
+from .pacman_render import PacManRenderer  # noqa: F401
+from .ghost_render import GhostRenderer  # noqa: F401

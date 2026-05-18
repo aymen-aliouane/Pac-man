@@ -31,4 +31,4 @@ class Cheat(Enum):
     NO_COLLISIONS = "no_collision"
     SKIP_LEVEL = "skip_level"
     INCREASE_SPEED = "increase_speed"
-
+    EXTRA_LIVES = "extra_lives"

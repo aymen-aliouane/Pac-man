@@ -1,10 +1,9 @@
-from displaying import PacManRenderer, LayerRenderer, GhostRenderer
 from components import Game, Settings, DisplaySettings, Controls, Cheat
+from displaying import PacManRenderer, LayerRenderer, GhostRenderer
 from game_logic import PacMan, Ghost
 from maze.pacgums import get_pacgums_map
 from maze.draw_maze import build_maze_layer
 from maze.maze_construct import construct_maze
-import pygame
 
 import json
 
@@ -13,7 +12,7 @@ def load_file(file_path: str) -> list:
     """Load the maze from a file, it will be called in the main file"""
     try:
         with open(file_path, "r") as f:
-                config = json.load(f)
+            config = json.load(f)
     except json.JSONDecodeError:
         raise ValueError("Invalid JSON file")
     except FileNotFoundError:
@@ -32,55 +31,72 @@ def init_game(file_path: str) -> Game:
     config = load_file(file_path)
     config = verif_settings(config)
 
-    maze = construct_maze(config.get("width"),
-                          config.get("height"),
-                          config.get("seed"))
-    pacgums = get_pacgums_map(maze.maze)
+    # init the maze and the pacgums map
+    maze = construct_maze(
+        config.get("width"),
+        config.get("height"),
+        config.get("seed"),
+    )
+    pacgums = get_pacgums_map(maze)
 
-    pacman_pos = [len(maze.maze[0]) // 2, len(maze.maze) // 2]
+    # look for a position for pacman in the middle of the maze
+    # not blocked by 4 walls
+    pacman_pos = [len(maze[0]) // 2, len(maze) // 2]
 
-    if maze.maze[pacman_pos[1]][pacman_pos[0]] == 15:
+    if maze[pacman_pos[1]][pacman_pos[0]] == 15:
         pacman_pos[0] -= 1
-    player = PacMan(pacman_pos[0], pacman_pos[1], maze.maze)
+    player = PacMan(pacman_pos[0], pacman_pos[1], maze)
 
+    # init settings based on user settings file
     settings = Settings(
-         seed=config.get("seed"),
-         point_per_pacgum=config.get("point_per_pacgum"),
-         point_per_ghost=config.get("point_per_ghost"),
-         point_per_super_pacgum=config.get("point_per_super_pacgum"),
-         max_time=config.get("max_time"),
-         controls=Controls(config.get("controls")),
-         fps=config.get("fps"))
+        seed=config.get("seed"),
+        point_per_pacgum=config.get("point_per_pacgum"),
+        point_per_ghost=config.get("point_per_ghost"),
+        point_per_super_pacgum=config.get("point_per_super_pacgum"),
+        max_time=config.get("max_time"),
+        controls=Controls(config.get("controls")),
+        fps=config.get("fps"),
+        cheats=[Cheat.INCREASE_SPEED],
+    )
 
-    display_settings = DisplaySettings(width=800, height=800)
-    display_settings.update_displaying_parameter(maze.maze)
+    # the availabe size will be full size, 1600x900, 1200x700
+    # the user need to be able to choose between those 3 sizes in the menue
+    # as well as changing the settings of the game
+    display_settings = DisplaySettings(width=1200, height=700)
+    display_settings.update_displaying_parameter(maze)
 
-    maze_layer = build_maze_layer(display_settings, maze.maze)
+    # build the maze layer and the renderers
+    maze_layer = build_maze_layer(display_settings, maze)
     layer_renderer = LayerRenderer(display_settings, maze_layer)
     pacman_renderer = PacManRenderer(display_settings)
     ghosts_renderer = GhostRenderer(display_settings)
 
-    game = Game(my_map=maze.maze,
-                pacgums=pacgums,
-                player=player,
-                ghosts=[Ghost("blinky", (0, 0)),
-                        Ghost("inky", (0, len(maze.maze) - 1)),
-                        Ghost("pinky", (len(maze.maze[0]) - 1, len(maze.maze) - 1)),
-                        Ghost("clyde", (len(maze.maze[0]) - 1, 0))
-                    ],
-                settings=settings,
-                display=display_settings,
-                layer_renderer=layer_renderer,
-                state=None,
-                pacman_renderer=pacman_renderer,
-                ghosts_renderer=ghosts_renderer)
+    # init the main game class
+    game = Game(
+        my_map=maze,
+        pacgums=pacgums,
+        player=player,
+        ghosts=[
+            Ghost("blinky", (0, 0)),
+            Ghost("inky", (0, len(maze) - 1)),
+            Ghost("pinky", (len(maze[0]) - 1, len(maze) - 1)),
+            Ghost("clyde", (len(maze[0]) - 1, 0)),
+        ],
+        settings=settings,
+        display=display_settings,
+        layer_renderer=layer_renderer,
+        state=None,
+        pacman_renderer=pacman_renderer,
+        ghosts_renderer=ghosts_renderer,
+    )
 
     return game
 
 
 def verif_settings(settings: dict[str, int]):
-    """Function to verify the settings, it will be called in the main file"""
-    if(settings.get("point_per_pacgum") is None or
+    """Function to verify and clean the settings"""
+
+    if (settings.get("point_per_pacgum") is None or
             not isinstance(settings["point_per_pacgum"], int) or
             settings["point_per_pacgum"] < 0):
         print("point_per_pacgum must be a positive integer superior to 100")
