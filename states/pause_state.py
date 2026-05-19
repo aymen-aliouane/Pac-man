@@ -44,7 +44,7 @@ class PauseState(State):
 
         return False
 
-    def update(self, game: Game, dt: float):
+    def update(self, game: Game, dt: float) -> None:
         """Update the game state when paused,
         execute the actions of the user choice"""
 
@@ -57,7 +57,7 @@ class PauseState(State):
             elif user_choice == "Quit":
                 game.state = MenuState()
 
-    def render(self, game: Game, screen: pygame.Surface):
+    def render(self, game: Game, screen: pygame.Surface) -> None:
         """Render the pause menu background, with the options and the user
         choice"""
         game.layer_renderer.render_pause_background(

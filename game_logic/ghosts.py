@@ -1,6 +1,7 @@
 import heapq
 import math
 import random
+from typing import cast
 from collections import deque
 
 
@@ -10,22 +11,22 @@ class PriorityQueue:
     it is a wrapper around the heapq module
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """init the list of elements"""
-        self.element: list[tuple[int, tuple[int, int]]] = []
+        self.element: list[tuple[float, tuple[int, int]]] = []
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         """True if empty"""
         return not self.element
 
-    def add(self, dist: int, tup: tuple[int, int]):
+    def add(self, dist: float, tup: tuple[int, int]) -> None:
         """
         append an element to the list,
         the element is a tuple of the distance and the cell
         """
         heapq.heappush(self.element, (dist, tup))
 
-    def get_element(self):
+    def get_element(self) -> tuple[float, tuple[int, int]]:
         """pop the first element, the element with the smallest distance
         """
         return heapq.heappop(self.element)
@@ -60,7 +61,7 @@ class Ghost:
 
         self.alive = True
         self.frightened_timer = 0.0
-        self.path: deque[tuple[int, int]] = []
+        self.path: deque[tuple[int, int]] = deque()
 
     def get_path(
         self,
@@ -83,7 +84,9 @@ class Ghost:
         # the path dictionary will store cells in a child: parent format.
         # this will help us reconstruct the path from the objective
         # to the ghost's current position
-        path = {self.cell: None}
+        path: dict[tuple[int, int], tuple[int, int] | None] = {
+            self.cell: None
+            }
         directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
         while not heap.is_empty():
@@ -128,7 +131,7 @@ class Ghost:
             # we append the current cell to the final path,
             # then we update the current cell to its parent in the path
             final_path.append(end)
-            end = path[end]
+            end = cast(tuple[int, int], path[end])
 
         # reverse the final path to switch from end->start to start->end
         final_path.reverse()
@@ -140,7 +143,7 @@ class Ghost:
         objective: tuple[int, int],
         direction: tuple[int, int],
         maze: list[list[int]],
-    ):
+    ) -> None:
         """Update the path of the ghost based on its state and it's behavior
 
         Parameters:
@@ -228,7 +231,7 @@ class Ghost:
                 else:
                     self.path = self.get_path(objective, maze)
 
-    def update_state(self):
+    def update_state(self) -> None:
         """
         Update the state of the ghost,
         it will update the speed of the ghost based on its state

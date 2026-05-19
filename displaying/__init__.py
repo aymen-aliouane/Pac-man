@@ -1,3 +1,5 @@
-from .layer_render import LayerRenderer  # noqa: F401
-from .pacman_render import PacManRenderer  # noqa: F401
-from .ghost_render import GhostRenderer  # noqa: F401
+from .layer_render import LayerRenderer
+from .pacman_render import PacManRenderer
+from .ghost_render import GhostRenderer
+
+__all__ = ["LayerRenderer", "PacManRenderer", "GhostRenderer"]

@@ -2,7 +2,7 @@ from game import GameEngine
 import sys
 
 
-def main():
+def main() -> None:
     """
     Main function to start the game.
     """

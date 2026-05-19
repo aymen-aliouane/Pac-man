@@ -1,4 +1,6 @@
-from mazegenerator.mazegenerator import MazeGenerator
+from typing import cast
+
+from mazegenerator.mazegenerator import MazeGenerator  # type: ignore
 
 
 def construct_maze(width: int, height: int, seed: int) -> list[list[int]]:
@@ -8,4 +10,4 @@ def construct_maze(width: int, height: int, seed: int) -> list[list[int]]:
         (width, height),
         seed=seed)
 
-    return maze.maze
+    return cast(list[list[int]], maze.maze)

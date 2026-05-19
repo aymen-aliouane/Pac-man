@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from components import Game, Settings, DisplaySettings, Controls, Cheat
 from displaying import PacManRenderer, LayerRenderer, GhostRenderer
 from game_logic import PacMan, Ghost
@@ -8,7 +10,7 @@ from maze.maze_construct import construct_maze
 import json
 
 
-def load_file(file_path: str) -> list:
+def load_file(file_path: str) -> dict[str, Any]:
     """Load the maze from a file, it will be called in the main file"""
     try:
         with open(file_path, "r") as f:
@@ -22,7 +24,7 @@ def load_file(file_path: str) -> list:
     except Exception as e:
         raise ValueError(f"An error occurred: {e}")
 
-    return config
+    return cast(dict[str, Any], config)
 
 
 def init_game(file_path: str) -> Game:
@@ -33,9 +35,9 @@ def init_game(file_path: str) -> Game:
 
     # init the maze and the pacgums map
     maze = construct_maze(
-        config.get("width"),
-        config.get("height"),
-        config.get("seed"),
+        cast(int, config.get("width")),
+        cast(int, config.get("height")),
+        cast(int, config.get("seed")),
     )
     pacgums = get_pacgums_map(maze)
 
@@ -49,13 +51,13 @@ def init_game(file_path: str) -> Game:
 
     # init settings based on user settings file
     settings = Settings(
-        seed=config.get("seed"),
-        point_per_pacgum=config.get("point_per_pacgum"),
-        point_per_ghost=config.get("point_per_ghost"),
-        point_per_super_pacgum=config.get("point_per_super_pacgum"),
-        max_time=config.get("max_time"),
+        seed=cast(int, config.get("seed")),
+        point_per_pacgum=cast(int, config.get("point_per_pacgum")),
+        point_per_ghost=cast(int, config.get("point_per_ghost")),
+        point_per_super_pacgum=cast(int, config.get("point_per_super_pacgum")),
+        max_time=cast(int, config.get("max_time")),
         controls=Controls(config.get("controls")),
-        fps=config.get("fps"),
+        fps=cast(int, config.get("fps")),
         cheats=[Cheat.INCREASE_SPEED],
     )
 
@@ -85,15 +87,15 @@ def init_game(file_path: str) -> Game:
         settings=settings,
         display=display_settings,
         layer_renderer=layer_renderer,
-        state=None,
         pacman_renderer=pacman_renderer,
         ghosts_renderer=ghosts_renderer,
+        time_remaining=cast(float, config.get("max_time")),
     )
 
     return game
 
 
-def verif_settings(settings: dict[str, int]):
+def verif_settings(settings: dict[str, Any]) -> dict[str, Any]:
     """Function to verify and clean the settings"""
 
     if (settings.get("point_per_pacgum") is None or
@@ -130,14 +132,14 @@ def verif_settings(settings: dict[str, int]):
             not isinstance(settings["controls"], str) or
             settings["controls"] not in {"WASD", "ZQSD", "ARROWS"}):
         print("controls must be one of the following: WASD, ZQSD, ARROWS")
+        settings["controls"] = "WASD"
+
+    if settings["controls"] == "WASD":
         settings["controls"] = Controls.WASD
-    else:
-        if settings["controls"] == "WASD":
-            settings["controls"] = Controls.WASD
-        elif settings["controls"] == "ZQSD":
-            settings["controls"] = Controls.ZQSD
-        elif settings["controls"] == "ARROWS":
-            settings["controls"] = Controls.ARROWS
+    elif settings["controls"] == "ZQSD":
+        settings["controls"] = Controls.ZQSD
+    elif settings["controls"] == "ARROWS":
+        settings["controls"] = Controls.ARROWS
 
     if (settings.get("fps") is None or
             not isinstance(settings["fps"], int) or

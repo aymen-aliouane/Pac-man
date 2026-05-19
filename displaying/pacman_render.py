@@ -124,7 +124,7 @@ class PacManRenderer:
         start: tuple[int, int],
         end: tuple[int, int],
         t: float,
-    ) -> tuple[int, int]:
+    ) -> tuple[float, float]:
         """lerp between two positions,
             will be used to make the animation smoother"""
         pos = (

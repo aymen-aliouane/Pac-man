@@ -34,7 +34,7 @@ class DisplaySettings:
     height: int
     offset: int = 6
 
-    def update_displaying_parameter(self, maze_map: list[list[int]]):
+    def update_displaying_parameter(self, maze_map: list[list[int]]) -> None:
         """
         Function called after object creation to construct the attributes
         cell_size, margin_left and margin_top,

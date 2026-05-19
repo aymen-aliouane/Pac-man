@@ -1,6 +1,6 @@
 import pygame
 
-from components.game import DisplaySettings
+from components import DisplaySettings
 
 
 def build_maze_tiles(
@@ -17,7 +17,7 @@ def build_maze_tiles(
     Return:
         A double array of surfaces, one for each tile
     """
-    tiles = []
+    tiles: list[list[pygame.Surface]] = []
     cols = len(maze[0])
     rows = len(maze)
 

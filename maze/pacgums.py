@@ -42,7 +42,7 @@ def get_pacgums_map(maze: list[list[int]]) -> list[list[int]]:
     0 for no pacgum,
     1 for normal pacgum
     2 for super pacgum"""
-    pacgums = []
+    pacgums: list[list[int]] = []
 
     for y, row in enumerate(maze):
         pacgums.append([])

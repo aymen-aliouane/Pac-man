@@ -5,31 +5,27 @@ from states.game_state import GameState
 
 
 class GameEngine:
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str) -> None:
         self.path = file_path
-        self.game = None
-        self.main_layer = None
+        self.game = init_game(self.path)
+        self.main_layer = self.initialize()
         self.clock = pygame.time.Clock()
-        self.running = False
-        self.screen = None
+        self.running: bool = False
 
-    def initialize(self):
+    def initialize(self) -> pygame.Surface:
         # initialize pygame
         pygame.init()
         pygame.display.set_caption("Pac-man")
 
-        # create the game object
-        self.game = init_game(self.path)
-
-        # create the main layer
+        # initialize the starting state of the game
         self.game.state = GameState()
-        self.screen = pygame.display.set_mode(
+
+        # return the main layer
+        return pygame.display.set_mode(
             (self.game.display.width, self.game.display.height)
         )
-        self.main_layer = self.screen
 
-    def run(self):
-        self.initialize()
+    def run(self) -> None:
         self.running = True
 
         while self.running:

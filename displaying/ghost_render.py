@@ -30,7 +30,9 @@ class GhostRenderer:
 
     def load_frames(self, name: str) -> dict[str, list[pygame.Surface]]:
         """load the frames of ghosts, and scale them to the cell size"""
-        frames = {"up": [], "down": [], "left": [], "right": []}
+        frames: dict[str, list[pygame.Surface]] = {
+            "up": [], "down": [], "left": [], "right": []
+            }
 
         # if the ghost is normal, load the frames for each direction
         if name not in {"dead", "frightened"}:
@@ -128,7 +130,7 @@ class GhostRenderer:
 
         return ghost
 
-    def render(self, main_layer: pygame.Surface, ghost: Ghost):
+    def render(self, main_layer: pygame.Surface, ghost: Ghost) -> None:
         """render ghosts on the main layer based on their state"""
         next_cell = ghost.path[0] if ghost.path else ghost.cell
 
@@ -185,7 +187,7 @@ class GhostRenderer:
         start: tuple[int, int],
         end: tuple[int, int],
         t: float,
-    ) -> tuple[int, int]:
+    ) -> tuple[float, float]:
         """lerp between two positions, used to make the animation smoother"""
         pos = (
             (start[0] + (end[0] - start[0]) * t),

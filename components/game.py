@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import deque
+from typing import cast
 from dataclasses import dataclass, field
 
 import pygame
@@ -11,6 +12,23 @@ from game_logic.pacman import PacMan
 
 from components.settings import DisplaySettings, Settings
 from .support_class import Cheat
+
+
+class State:
+    """Class representing the current state of the game,
+    used to handle the game loop"""
+
+    def handle_input(self, events: list[pygame.Event], game: Game) -> bool:
+        print("end game")
+        return True
+
+    def update(self, game: Game, dt: float) -> None:
+        """Update the game state"""
+        pass
+
+    def render(self, game: Game, screen: pygame.Surface) -> None:
+        """Render the game state"""
+        pass
 
 
 @dataclass
@@ -26,15 +44,17 @@ class Game:
 
     settings: Settings
     display: DisplaySettings
-    state: State
-    layer_renderer: LayerRenderer
 
+    layer_renderer: LayerRenderer
     pacman_renderer: PacManRenderer
     ghosts_renderer: GhostRenderer
 
+    time_remaining: float
+
+    state: State = State()
+
     score: int = 0
     level: int = 1
-    time_remaining: float = 9.0
     post_death_timer: float = 0.0
     post_kill_timer: float = 0.0
     kill_location: list[tuple[int, int]] = field(default_factory=list)
@@ -120,27 +140,10 @@ class Game:
         if self.my_map[pacman_pos[1]][pacman_pos[0]] == 15:
             pacman_pos[0] -= 1
 
-        self.player.cell_from = tuple(pacman_pos)
-        self.player.cell_to = tuple(pacman_pos)
+        self.player.cell_from = cast(tuple[int, int], tuple(pacman_pos))
+        self.player.cell_to = cast(tuple[int, int], tuple(pacman_pos))
 
         for ghost in self.ghosts:
             ghost.cell = ghost.initial_corner
             ghost.path = deque()
             ghost.move_timer = 0.0
-
-
-class State:
-    """Class representing the current state of the game,
-    used to handle the game loop"""
-
-    def handle_input(self, events: list[pygame.Event], game: Game) -> bool:
-        print("end game")
-        return True
-
-    def update(self, game: Game, dt: float):
-        """Update the game state"""
-        pass
-
-    def render(self, game: Game, screen: pygame.Surface):
-        """Render the game state"""
-        pass

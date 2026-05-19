@@ -1,8 +1,11 @@
+FLAKE8 = .venv/bin/flake8
+MYPY = .venv/bin/mypy
+
 install:
 	uv sync
 
 run:
-	uv run python3 main.py config.json
+	UV_SKIP_WHEEL_FILENAME_CHECK=1 uv run python3 main.py config.json
 
 clean:
 	find . -type f -name "*.py[co]" -delete
@@ -18,11 +21,11 @@ clean:
 	find . -type d -name "*.eggs" -exec rm -rf {} +
 
 lint: 
-	flake8 . --exclude=.venv
-	mypy . --warn-return-any
+	$(FLAKE8) . --exclude=.venv
+	$(MYPY) . --warn-return-any
 	--warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs
 	--check-untyped-defs
 
 lint-strict:
-	flake8 . --exclude=.venv
-	mypy . --strict
+	$(FLAKE8) . --exclude=.venv
+	$(MYPY) . --strict
