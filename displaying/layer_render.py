@@ -127,8 +127,12 @@ class LayerRenderer:
             main_layer.blit(
                 self.player_lives,
                 (
-                    self.settings.width - (i * live_size) - live_size,
-                    self.settings.height - live_size,
+                    self.settings.margin_left
+                    + self.settings.cell_size * len(game.my_map[0])
+                    - (i * live_size) - live_size,
+                    self.settings.margin_top
+                    + self.settings.cell_size * len(game.my_map)
+                    + live_size // 2,
                 ),
             )
 
