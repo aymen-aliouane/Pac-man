@@ -8,7 +8,7 @@ import pygame
 class PauseState(State):
     """Class that handle the user events when paused"""
     # The options of the pause menu, and the index of the user choice
-    options = ["Resume", "Quit"]
+    options = ["Resume", "Next level", "Quit"]
     choice = 0
 
     # True when user click enter to validate the choice
@@ -53,6 +53,9 @@ class PauseState(State):
             user_choice = self.options[self.choice]
 
             if user_choice == "Resume":
+                game.state = GameState()
+            elif user_choice == "Next level":
+                game.next_level()
                 game.state = GameState()
             elif user_choice == "Quit":
                 game.state = MenuState()

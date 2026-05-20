@@ -56,7 +56,11 @@ class DisplaySettings:
             ) // 2
         self.font: pygame.freetype.Font = pygame.freetype.Font(
             "sprite/other/BoldPixels.ttf",
-            self.cell_size // 2,
+            self.cell_size / 2,
+        )
+        self.small_font: pygame.freetype.Font = pygame.freetype.Font(
+            "sprite/other/BoldPixels.ttf",
+            self.cell_size / 2.5,
         )
 
 

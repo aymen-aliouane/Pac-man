@@ -1,10 +1,9 @@
 import pygame
-
-from components import DisplaySettings
+from typing import Any
 
 
 def build_maze_tiles(
-    settings: DisplaySettings,
+    settings: Any,
     maze: list[list[int]],
 ) -> list[list[pygame.Surface]]:
     """
@@ -41,7 +40,7 @@ def build_maze_tiles(
 
 def build_tiles(
     cell: int,
-    settings: DisplaySettings,
+    settings: Any,
     right: int,
     top: int,
     left: int,
@@ -245,7 +244,7 @@ def build_tiles(
 
 
 def build_maze_layer(
-    settings: DisplaySettings,
+    settings: Any,
     maze: list[list[int]],
 ) -> pygame.Surface:
     """

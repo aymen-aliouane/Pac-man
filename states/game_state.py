@@ -7,6 +7,7 @@ import pygame
 
 class GameState(State):
     """Class that handle the user events during the game"""
+    pause = False
 
     def handle_input(self, events: list[pygame.Event], game: Game) -> bool:
         """Handle user inputs in the game,
@@ -37,12 +38,16 @@ class GameState(State):
                 if event.key == game.settings.controls.value["LEFT"]:
                     game.player.update_direction("left")
 
+                if event.key == pygame.K_p:
+                    if self.pause:
+                        self.pause = False
+                    else:
+                        self.pause = True
+
         return False
 
     def handle_cheats(self, game: Game) -> None:
         """Handle the cheats activated by the user"""
-        if Cheat.EXTRA_LIVES in game.settings.cheats:
-            game.player.lives = 999
 
         if Cheat.INCREASE_SPEED in game.settings.cheats:
             game.player.speed = 8.0
@@ -53,11 +58,17 @@ class GameState(State):
     def update(self, game: Game, dt: float) -> None:
         """Update the game state, check for collisions,
         update the player and the ghosts"""
+        # if user clicked on p, it pause the game without
+        # going to the pause menu, allowing the user to see the game
+        if self.pause:
+            return
+
         # If the player is dead,
         # it will wait for the post death timer to end
         # before resuming the player
         if game.post_death_timer > 0.0:
             game.post_death_timer -= dt
+            game.achievements_check()
             return
 
         # if the player made a kill,
@@ -75,6 +86,7 @@ class GameState(State):
             game.time_remaining -= dt
 
             self.handle_cheats(game)
+            game.achievements_check()
 
             # no_collision will allow the player to move through
             # walls if the cheat is activated
@@ -129,4 +141,4 @@ class GameState(State):
         for ghost in game.ghosts:
             game.ghosts_renderer.render(screen, ghost)
 
-        game.layer_renderer.render_kill_points(screen, game)
+        game.layer_renderer.render_game_additional_info(screen, game)
