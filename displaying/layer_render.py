@@ -314,7 +314,8 @@ class LayerRenderer:
         own box with its name, a title and a description of its behavior"""
 
         box_size = ((self.settings.height - self.settings.margin_top * 2) / 4)
-        box_padding = self.settings.margin_top * 2.4 - box_size
+        box_padding = ((self.settings.height - self.settings.margin_top * 2)
+                       - (box_size * 3.55))
 
         y_pos = float(self.settings.margin_top)
         x_pos = self.settings.width - self.settings.margin_left * 0.9
@@ -346,6 +347,15 @@ class LayerRenderer:
 
             pygame.draw.rect(
                 self.additional_game_info_layer,
+                (100, 100, 100),
+                (x_pos - box_size * 0.05,
+                 y_pos - box_size * 0.05,
+                 self.settings.margin_left * 0.74,
+                 box_size - box_padding * 0.15),
+                border_radius=5,
+            )
+            pygame.draw.rect(
+                self.additional_game_info_layer,
                 color,
                 (x_pos,
                  y_pos,
@@ -353,6 +363,7 @@ class LayerRenderer:
                  box_size - box_padding),
                 border_radius=5,
             )
+
             self.additional_game_info_layer.blit(
                 frame,
                 (x_pos + box_size * 0.15,
@@ -393,6 +404,30 @@ class LayerRenderer:
 
         self.render_score_bar(game)
         self.render_achievements(game)
+
+        pygame.draw.rect(
+            self.additional_game_info_layer,
+            (255, 255, 0, 150),
+            (self.settings.margin_left * 0.1,
+             self.settings.margin_top * 0.1,
+             self.settings.margin_left * 0.5,
+             self.settings.margin_top * 0.7),
+            border_radius=10,
+         )
+        self.settings.small_font.render_to(
+            self.additional_game_info_layer,
+            (self.settings.margin_left * 0.15,
+             self.settings.margin_top * 0.16),
+            "Press 'p' to pause",
+            (0, 0, 0),
+        )
+        self.settings.small_font.render_to(
+            self.additional_game_info_layer,
+            (self.settings.margin_left * 0.15,
+             self.settings.margin_top * 0.5),
+            "Press 'esc' to menu",
+            (0, 0, 0),
+        )
 
         self.render_kill_points(game)
 

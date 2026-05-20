@@ -68,7 +68,7 @@ def init_game(file_path: str) -> Game:
     # pygame.init()
     # w, h = pygame.display.get_desktop_sizes()[0]
 
-    display_settings = DisplaySettings(width=1200, height=700)
+    display_settings = DisplaySettings(width=1600, height=900)
     display_settings.update_displaying_parameter(maze)
 
     # build the maze layer and the renderers
