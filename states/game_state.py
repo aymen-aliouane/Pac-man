@@ -115,6 +115,8 @@ class GameState(State):
                     game.state = LostState()
                     return
 
+                game.manage_scatter_timer(ghost, dt)
+
                 # update ghost path if the player changed cell
                 if not ghost.path or ghost.path[-1] != player_cell:
                     ghost.update_path(

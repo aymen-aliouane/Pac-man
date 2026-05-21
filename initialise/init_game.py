@@ -1,6 +1,6 @@
 from typing import Any, cast
 
-from components import Game, Settings, DisplaySettings, Controls, Cheat
+from components import Game, Settings, DisplaySettings, Controls
 from displaying import PacManRenderer, LayerRenderer, GhostRenderer
 from game_logic import PacMan, Ghost
 from maze.pacgums import get_pacgums_map
@@ -58,7 +58,6 @@ def init_game(file_path: str) -> Game:
         max_time=cast(int, config.get("max_time")),
         controls=Controls(config.get("controls")),
         fps=cast(int, config.get("fps")),
-        cheats=[Cheat.INCREASE_SPEED],
     )
 
     # the availabe size will be full size, 1600x900, 1200x700

@@ -114,16 +114,25 @@ class Game:
         if (self.score >= 1000
                 and "Not bad" not in self.achievements):
             self.achievements["Not bad"] = "Score 1000 points"
-        if (self.score >= 5000
+        if (self.score >= 3000
                 and "Accidental Competence" not in self.achievements):
-            self.achievements["Accidental Competence"] = "Score 5000 points"
-        if (self.score >= 10000
+            self.achievements["Accidental Competence"] = "Score 3000 points"
+        if (self.score >= 5000
                 and "The Student Has No Master" not in self.achievements):
             self.achievements[
-                "The Student Has No Master"] = "Score 10000 points"
-        if (self.score >= 50000
+                "The Student Has No Master"] = "Score 5000 points"
+        if (self.score >= 7000
                 and "Cheater" not in self.achievements):
-            self.achievements["Cheater"] = "Score 50000 points"
+            self.achievements["Cheater"] = "Score 7000 points"
+
+        if (self.score >= 3000
+            and self.total_kills == 0
+                and "Pacifist" not in self.achievements):
+            self.achievements["Pacifist"] = ("3000 points without "
+                                             "killing any ghost")
+
+        if self.level == 2 and "YOU DID WHAT??" not in self.achievements:
+            self.achievements["YOU DID WHAT??"] = "complete the first level"
 
         if (self.time_remaining <= 0
                 and "Time's up!" not in self.achievements):
@@ -133,17 +142,20 @@ class Game:
                 and "First Blood" not in self.achievements):
             self.achievements["First Blood"] = "Kill your first ghost"
         if (self.total_kills >= 4
-                and "It's becoming personal" not in self.achievements):
-            self.achievements["It's becoming personal"] = "Kill 5 ghosts"
+                and "It's Becoming Personal" not in self.achievements):
+            self.achievements["It's Becoming Personal"] = "Kill 5 ghosts"
         if (self.total_kills >= 6
                 and "Ghost Hunter" not in self.achievements):
-            self.achievements["Ghost Hunter"] = "Kill 10 ghosts"
+            self.achievements["Ghost Hunter"] = "Kill 6 ghosts"
         if (self.total_kills >= 10
                 and "Butcher" not in self.achievements):
-            self.achievements["Butcher"] = "Kill 50 ghosts"
+            self.achievements["Butcher"] = "Kill 10 ghosts"
         if (self.total_kills >= 20
+                and "HR Would Like A Word" not in self.achievements):
+            self.achievements["HR Would Like A Word"] = "Kill 20 ghosts"
+        if (self.total_kills >= 30
                 and "Hiroshima?" not in self.achievements):
-            self.achievements["Hiroshima?"] = "Kill 100 ghosts"
+            self.achievements["Hiroshima?"] = "Kill 30 ghosts"
 
         if (self.player.lives == 2 and "First Time?" not in self.achievements):
             self.achievements["First Time?"] = "killed by a ghost"
@@ -194,6 +206,32 @@ class Game:
                     # timer after the death
                     self.post_death_timer = 2.0
                     break
+
+    def manage_scatter_timer(self, ghost: Ghost, dt: float) -> None:
+        """Manage the scatter timer of the ghost,
+        if the ghost is in scatter mode, it will switch to
+        chase mode after 4 seconds, and if it's in chase mode,
+        it will switch to scatter mode after 20 seconds"""
+
+        if ghost.frightened_timer > 0.0:
+            ghost.frightened_timer -= dt
+            if ghost.frightened_timer <= 0.0:
+                ghost.frightened_timer = 0.0
+                ghost.path = deque([ghost.path[0]] if ghost.path else [])
+
+        if ghost.scatter_timer > 0.0:
+            ghost.scatter_timer -= dt
+            if ghost.scatter_timer <= 0.0:
+                ghost.scatter_timer = 0.0
+                ghost.chase_timer = 20.0
+                ghost.path = deque([ghost.path[0]] if ghost.path else [])
+
+        elif ghost.chase_timer > 0.0:
+            ghost.chase_timer -= dt
+            if ghost.chase_timer <= 0.0:
+                ghost.chase_timer = 0.0
+                ghost.scatter_timer = 4.0
+                ghost.path = deque([ghost.path[0]] if ghost.path else [])
 
     def reset_game(self) -> None:
         """

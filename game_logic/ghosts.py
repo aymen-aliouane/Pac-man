@@ -61,6 +61,8 @@ class Ghost:
 
         self.alive = True
         self.frightened_timer = 0.0
+        self.scatter_timer = 0.0
+        self.chase_timer = 10.0
         self.path: deque[tuple[int, int]] = deque()
 
     def get_path(
@@ -180,6 +182,14 @@ class Ghost:
                 )
             self.path = self.get_path(next_pos, maze)
 
+        elif self.scatter_timer > 0.0:
+            # if the ghost is in scatter mode,
+            # it will move to its initial corner
+            if self.path:
+                return
+            elif self.cell != self.initial_corner:
+                self.path = self.get_path(self.initial_corner, maze)
+
         elif self.move_timer == 0.0:
             # if the ghost is not moving, or reached a cell,
             # we update its path based on its behavior
@@ -249,9 +259,6 @@ class Ghost:
         Move the ghost in the maze based on its path,
         then return the current cell of the ghost after the movement
         """
-        if self.frightened_timer >= 0.0:
-            # decrease the frightened timer, if it is greater than 0
-            self.frightened_timer -= dt
         if not self.path:
             # if there is no path, the ghost will stay in its current cell
             return self.cell
