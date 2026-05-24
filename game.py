@@ -1,7 +1,7 @@
 import pygame
 
 from initialise.init_game import init_game
-from states.game_state import GameState
+from states import GameState, MenuState
 
 
 class GameEngine:
@@ -18,7 +18,7 @@ class GameEngine:
         pygame.display.set_caption("Pac-man")
 
         # initialize the starting state of the game
-        self.game.state = GameState()
+        self.game.state = MenuState()
 
         # return the main layer
         return pygame.display.set_mode(

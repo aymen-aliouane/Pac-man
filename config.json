@@ -1,6 +1,6 @@
 {
     "max_time": 120,
-    "controls": "WASD",
+    "controls": "ARROWS",
     "fps": 60,
     "width": 15,
     "height": 15,
