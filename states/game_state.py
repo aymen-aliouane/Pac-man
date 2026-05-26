@@ -39,10 +39,10 @@ class GameState(State):
                     game.player.update_direction("left")
 
                 if event.key == pygame.K_p:
-                    if self.pause:
-                        self.pause = False
-                    else:
-                        self.pause = True
+                    self.pause = self.pause == False
+
+                if event.key == pygame.K_q:
+                    return True
 
         return False
 

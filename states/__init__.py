@@ -10,4 +10,5 @@ __all__ = [
     "PauseState",
     "LostState",
     "VictoryState",
+    "GameState"
 ]

@@ -19,6 +19,7 @@ class GameEngine:
 
         # initialize the starting state of the game
         self.game.state = MenuState()
+        # self.game.state = GameState()
 
         # return the main layer
         return pygame.display.set_mode(

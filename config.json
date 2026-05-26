@@ -1,5 +1,5 @@
 {
-    "max_time": 120,
+    "max_time": 1200000,
     "controls": "ARROWS",
     "fps": 60,
     "width": 15,

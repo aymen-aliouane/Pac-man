@@ -8,6 +8,7 @@ from maze.draw_maze import build_maze_layer
 from maze.maze_construct import construct_maze
 
 import json
+import pygame
 
 
 def load_file(file_path: str) -> dict[str, Any]:
@@ -66,8 +67,9 @@ def init_game(file_path: str) -> Game:
 
     # pygame.init()
     # w, h = pygame.display.get_desktop_sizes()[0]
-
-    display_settings = DisplaySettings(width=1600, height=900)
+    pygame.init()
+    info = pygame.display.Info()
+    display_settings = DisplaySettings(width=info.current_w, height=int(info.current_h*0.9))
     display_settings.update_displaying_parameter(maze)
 
     # build the maze layer and the renderers
