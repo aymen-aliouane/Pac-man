@@ -100,6 +100,7 @@ class GameState(State):
 
             # verif if player is still alive
             if not game.player.is_alive():
+                print("Player is dead")
                 game.state = LostState()
                 return
 
@@ -112,6 +113,7 @@ class GameState(State):
 
                 # verif if player is still alive
                 if not game.player.is_alive():
+                    print("Player is dead")
                     game.state = LostState()
                     return
 

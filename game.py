@@ -1,7 +1,7 @@
 import pygame
 
 from initialise.init_game import init_game
-from states import GameState, MenuState
+from states import GameState, MenuState, LostState, SaveScoreState
 
 
 class GameEngine:
@@ -18,8 +18,8 @@ class GameEngine:
         pygame.display.set_caption("Pac-man")
 
         # initialize the starting state of the game
-        self.game.state = MenuState()
-        # self.game.state = GameState()
+        # self.game.state = MenuState()
+        self.game.state = SaveScoreState()
 
         # return the main layer
         return pygame.display.set_mode(
@@ -42,8 +42,11 @@ class GameEngine:
                 break
 
             self.game.state.update(self.game, dt)
+            # print("state", self.game.state.__class__.__name__)
 
             self.game.state.render(self.game, self.main_layer)
+            # print("rendered")
+            # print("running", self.running)
 
             # update screen to user
             pygame.display.flip()

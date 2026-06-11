@@ -1,4 +1,4 @@
-from components import State
+from components import State, Game
 from .game_state import GameState
 from displaying.ui_components import Title, Button
 import pygame

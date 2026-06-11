@@ -52,13 +52,14 @@ def init_game(file_path: str) -> Game:
 
     # init settings based on user settings file
     settings = Settings(
-        seed=cast(int, config.get("seed")),
-        point_per_pacgum=cast(int, config.get("point_per_pacgum")),
-        point_per_ghost=cast(int, config.get("point_per_ghost")),
-        point_per_super_pacgum=cast(int, config.get("point_per_super_pacgum")),
         max_time=cast(int, config.get("max_time")),
         controls=Controls(config.get("controls")),
         fps=cast(int, config.get("fps")),
+        high_scores_file=cast(str, config.get("high_scores_file")),
+        point_per_pacgum=cast(int, config.get("point_per_pacgum")),
+        point_per_ghost=cast(int, config.get("point_per_ghost")),
+        point_per_super_pacgum=cast(int, config.get("point_per_super_pacgum")),
+        seed=cast(int, config.get("seed")),
     )
 
     # the availabe size will be full size, 1600x900, 1200x700

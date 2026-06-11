@@ -3,6 +3,7 @@ from .menu_state import MenuState
 from .pause_state import PauseState
 from .victory_state import VictoryState
 from .game_state import GameState
+from .save_score_state import SaveScoreState
 
 
 __all__ = [
@@ -10,5 +11,6 @@ __all__ = [
     "PauseState",
     "LostState",
     "VictoryState",
-    "GameState"
+    "GameState",
+    "SaveScoreState"
 ]
