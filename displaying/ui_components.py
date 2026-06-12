@@ -49,10 +49,11 @@ class Button(Component):
         y: int,
         width: int,
         height: int,
+        border_radius: int = 10
 
     ):
         self.screen = screen
-
+        self.border_radius = border_radius
         self.text = text
 
         self.font_type = font_type
@@ -88,10 +89,9 @@ class Button(Component):
 
         padding_x = 20
         padding_y = 10
-        button_width = text_surface.get_width() + padding_x * 2
-        button_height = text_surface.get_height() + padding_y * 2
-        self.x = self.x - button_width // 2
-        self.rect = pygame.Rect(self.x, self.y, button_width, button_height)
+
+        self.x = self.x - self.width // 2
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         text_rect = text_surface.get_rect(
             center=self.rect.center
         )
@@ -100,7 +100,7 @@ class Button(Component):
             self.screen,
             current_color,
             self.rect,
-            border_radius=12
+            border_radius=self.border_radius
         )
 
         self.screen.blit(text_surface, text_rect)
@@ -127,7 +127,7 @@ class InputBox(Button):
         height: int,
         size: int,
     ):
-        self.text = "123456789"
+        self.name = ""
         self.type = type_
         self.color = color
         self.x = x
@@ -144,24 +144,24 @@ class InputBox(Button):
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_BACKSPACE:
-                self.text = self.text[:-1]
+                self.name = self.name[:-1]
 
             elif event.key == pygame.K_RETURN:
-                print("Submitted:", self.text)
+                print("Submitted:", self.name)
 
-            elif len(self.text) < 14:
-                self.text += event.unicode
-            if len(self.text) > 10:
+            elif len(self.name) < 14:
+                self.name += event.unicode
+            if len(self.name) > 10:
                 self.color = (255, 0, 0)
                 self.error = "Name must be at most 10 characters"
                 self.active = False
-            elif not all(c.isalnum() or c.isspace() for c in self.text):
+            elif not all(c.isalnum() or c.isspace() for c in self.name):
                 self.color = (255, 0, 0)
                 self.error = "Name must contain only alphanumeric characters and spaces"
                 self.active = False
             else:
                 self.error = ""
-                self.color = (255, 255, 255)
+                self.color = (0, 0, 0)
                 self.active = True
 
     def render(self):
@@ -170,7 +170,7 @@ class InputBox(Button):
         font = pygame.font.SysFont(self.type, self.size)
 
         text_surface = font.render(
-            self.text,
+            self.name,
             True,
             self.color
         )
@@ -194,3 +194,62 @@ class InputBox(Button):
             error_surface,
             error_rect
         )
+
+
+class ExitButton(Button):
+    def __init__(self, screen, game, button_width, button_height):
+        super().__init__(
+            screen=screen,
+            text="EXIT",
+            font_type="Impact",
+            font_size=40,
+            color=(255, 255, 255),
+            hover_color=(0, 0, 0),
+            text_color=(255, 255, 255),
+            width=button_width,
+            height=button_height,
+            x=button_width - 50,
+            y=game.display.height - button_height - 50,
+            border_radius=0
+        )
+        self.render()
+        self.x += 100
+        self.y += 10
+        self.width -= 20
+        self.height -= 20
+        self.color = (128, 0, 0)
+        self.hover_color = (255, 0, 0)
+
+    def draw(self):
+        self.render()
+
+
+
+class PlayButton(Button):
+    def __init__(self, screen, game, button_width, button_height):
+        super().__init__(
+            screen=screen,
+            text="PLAY",
+            font_type="Impact",
+            font_size=40,
+            color=(255, 255, 255),
+            hover_color=(255, 255, 255),
+            text_color=(255, 255, 255),
+            width=button_width,
+            height=button_height,
+            x=game.display.width - button_width // 2 - 50,
+            y=game.display.height - button_height - 50,
+            border_radius=0
+        )
+
+        self.render()
+
+        self.x += 100
+        self.y += 10
+        self.width -= 20
+        self.height -= 20
+        self.color = (0, 0, 128)
+        self.hover_color = (0, 0, 255)
+
+    def draw(self):
+        self.render()

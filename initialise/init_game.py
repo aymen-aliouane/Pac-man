@@ -15,7 +15,14 @@ def load_file(file_path: str) -> dict[str, Any]:
     """Load the maze from a file, it will be called in the main file"""
     try:
         with open(file_path, "r") as f:
-            config = json.load(f)
+            data = f.readlines()
+            new_lines = []
+            for line in data:
+                line = line.strip()
+                if line.startswith("//") or line.startswith("#") or line == "":
+                    continue
+                new_lines.append(line)
+            config = json.loads(''.join(new_lines))
     except json.JSONDecodeError:
         raise ValueError("Invalid JSON file")
     except FileNotFoundError:
@@ -55,7 +62,7 @@ def init_game(file_path: str) -> Game:
         max_time=cast(int, config.get("max_time")),
         controls=Controls(config.get("controls")),
         fps=cast(int, config.get("fps")),
-        high_scores_file=cast(str, config.get("high_scores_file")),
+        high_scores_file=cast(str, config.get("high_scores_file", "high_scores.json")),
         point_per_pacgum=cast(int, config.get("point_per_pacgum")),
         point_per_ghost=cast(int, config.get("point_per_ghost")),
         point_per_super_pacgum=cast(int, config.get("point_per_super_pacgum")),
@@ -70,7 +77,8 @@ def init_game(file_path: str) -> Game:
     # w, h = pygame.display.get_desktop_sizes()[0]
     pygame.init()
     info = pygame.display.Info()
-    display_settings = DisplaySettings(width=info.current_w, height=int(info.current_h*0.9))
+    # display_settings = DisplaySettings(width=info.current_w, height=int(info.current_h*0.9))
+    display_settings = DisplaySettings(width=info.current_w, height=950)
     display_settings.update_displaying_parameter(maze)
 
     # build the maze layer and the renderers
@@ -124,9 +132,9 @@ def verif_settings(settings: dict[str, Any]) -> dict[str, Any]:
 
     if (settings.get("max_time") is None or
             not isinstance(settings["max_time"], int) or
-            settings["max_time"] <= 100):
+            settings["max_time"] < 90):
         print("max_time must be a positive integer")
-        settings["max_time"] = 300
+        settings["max_time"] = 90
 
     if (settings.get("seed") is None or
             not isinstance(settings["seed"], int) or

@@ -52,12 +52,14 @@ class Game:
     ghosts_renderer: GhostRenderer
 
     time_remaining: float
-
     state: State = State()
 
     score: int = 0
     level: int = 1
     achievements: dict[str, str] = field(default_factory=dict)
+
+    # Back-reference to the running GameEngine (set by GameEngine after init)
+    engine: object | None = None
     total_kills: int = 0
     post_death_timer: float = 0.0
     post_kill_timer: float = 0.0

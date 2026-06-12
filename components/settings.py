@@ -93,6 +93,7 @@ class Settings:
     point_per_pacgum: int
     point_per_ghost: int
     point_per_super_pacgum: int
+    high_scores_file: str
 
     controls: Controls
     fps: int
